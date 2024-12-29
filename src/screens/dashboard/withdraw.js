@@ -1,46 +1,73 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import myStylesheet from '../../stylesheet'
-import DropDownPicker from 'react-native-dropdown-picker'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useState, useContext } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import myStylesheet from "../../stylesheet";
+import DropDownPicker from "react-native-dropdown-picker";
+import { useNavigation } from "@react-navigation/native";
+import DividerLine from "../../components/dividerLine";
+import { AppContext } from "../../../appContext";
 
 const WithdrawScreen = () => {
-  const [myBal, setMyBal] = useState(0);
+  const navigation = useNavigation();
+  const { user } = useContext(AppContext);
   const [amount, setAmount] = useState(0);
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('Paypal');
+  const [value, setValue] = useState("Bitcoin");
   const [items, setItems] = useState([
-    { label: 'Paypal', value: 'Paypal' },
-    { label: 'Crypto', value: 'Crypto' },
-    { label: 'Bitcoin', value: 'Bitcoin', parent: "Crypto" },
-    { label: 'Ethereum', value: 'Ethereum', parent: "Crypto" },
-    { label: 'Bank', value: 'Bank', },
-    { label: 'Others', value: 'Others' }
+    { label: "Bitcoin", value: "Bitcoin" },
+    { label: "Ethereum", value: "Ethereum" },
+    { label: "USDT", value: "USDT" },
+    { label: "Others", value: "Others" }
   ]);
+
+  const processWithdraw = () => {
+    if (amount == 0) {
+      return;
+    }
+
+    if (amount > user.mainBalance) {
+      Alert.alert(
+        "Error",
+        "Insufficient fund",
+        [
+          {
+            text: "Deposit",
+            onPress: () => navigation.navigate("deposit"),
+            style: "cancel"
+          }
+        ],
+        {
+          cancelable: true
+        }
+      );
+      return;
+    }
+    navigation.navigate("confirm", {
+      coin: value,
+      amount
+    });
+  }
   return (
     <SafeAreaView>
-      <View style={{ height: "100%", backgroundColor: "#0F0F0F", padding: 20}}>
+      <View style={{ height: "100%", backgroundColor: "#0F0F0F", padding: 20 }}>
+        <Text style={{ color: "#fff" }}>Select Payment method</Text>
         <View
-          style={
-            [myStylesheet.hrRow, myStylesheet.wFull, myStylesheet.justifyEven,
+          style={[
+            myStylesheet.wFull,
             {
-              paddingLeft: 20,
-              paddingRight: 20,
-              backgroundColor: "#333",
               alignItems: "center",
-              height: 150,
               marginBottom: 20,
-              borderWidth: 2,
               borderRadius: 10,
-              marginTop:30 ,
+              marginTop: 30,
+              justifyContent: "space-between",
               borderColor: "#fff"
-            }]}>
-          <View style={[myStylesheet.hrRow, { gap: 10 }]}>
-            <Ionicons name={`logo-octocat`} size={32} color={"#fff"} />
+            }
+          ]}
+        >
+          {/* <View style={[{ gap: 10 }]}>
             <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>Paypal</Text>
-          </View>
-          <View style={{ justifyContent: 'center' }}>
+          </View> */}
+          <View>
             <DropDownPicker
               open={open}
               value={value}
@@ -48,21 +75,195 @@ const WithdrawScreen = () => {
               setOpen={setOpen}
               setValue={setValue}
               setItems={setItems}
-              placeholder='Change'
+              placeholder="Change"
               theme="DARK"
-              style={{ width: 130, backgroundColor: "#0F0F0F", borderRadius: 10 }}
+              style={{ width: "100%", borderRadius: 10 }}
             />
           </View>
         </View>
         <View style={{ alignItems: "center", gap: 20 }}>
-          <Text style={{ fontSize: 20, color: "#fff" }}>Enter Amount in USD</Text>
+          <Text style={{ fontSize: 20, color: "#fff" }}>
+            Enter Amount in USD
+          </Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={{ fontSize: 40, fontWeight: "bold", color: "#fff" }}>$</Text>
-            <TextInput inputMode='numeric' value={amount} style={{ color: "#fff", fontWeight: "bold", fontSize: 40 }} onChangeText={amt => setAmount(amt)} />
+            <Text style={{ fontSize: 40, fontWeight: "bold", color: "#fff" }}>
+              $
+            </Text>
+            <TextInput
+              inputMode="numeric"
+              value={amount}
+              style={{ color: "#fff", fontWeight: "bold", fontSize: 40 }}
+              onChangeText={amt => setAmount(amt)}
+            />
           </View>
-          <Text style={{ fontSize: 20, color: "#fff" }}>Min $100 - Max $10000</Text>
-          <Text style={{ fontSize: 20, color: "#fff" }}>Current Balance: {myBal}</Text>
-          <View style={{ width: "100%", alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 20 }}>
+          <View style={{ width: "100%", paddingTop: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 10
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: 20
+                }}
+              >
+                Limit
+              </Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+
+                  paddingTop: 2,
+                  paddingBottom: 2,
+
+                  borderRadius: 50
+                }}
+              >
+                $1 - $9,999,999
+              </Text>
+            </View>
+            <DividerLine />
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 10
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: 20
+                }}
+              >
+                Charges (2%)
+              </Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+
+                  paddingTop: 2,
+                  paddingBottom: 2,
+
+                  borderRadius: 50
+                }}
+              >
+                ${amount * 0.02}
+              </Text>
+            </View>
+            <DividerLine />
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 10
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: 20
+                }}
+              >
+                Receivable
+              </Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+
+                  paddingTop: 2,
+                  paddingBottom: 2,
+
+                  borderRadius: 50
+                }}
+              >
+                ${amount - amount * 0.02}
+              </Text>
+            </View>
+            <DividerLine />
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 10
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: 20
+                }}
+              >
+                Conversion Rate
+              </Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+
+                  paddingTop: 2,
+                  paddingBottom: 2,
+
+                  borderRadius: 50
+                }}
+              >
+                $1.00 = $1.00
+              </Text>
+            </View>
+            <DividerLine />
+
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 10
+              }}
+            >
+              <Text
+                style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                  fontSize: 20
+                }}
+              >
+                In $:
+              </Text>
+              <Text
+                style={{
+                  color: "#fff",
+                  textAlign: "center",
+
+                  paddingTop: 2,
+                  paddingBottom: 2,
+
+                  borderRadius: 50
+                }}
+              >
+                {amount - (amount * 0.02).toFixed(2)}
+              </Text>
+            </View>
+            <DividerLine />
+          </View>
+          {/* <Text style={{ fontSize: 20, color: "#fff" }}>Current Balance: {myBal}</Text> */}
+          {/* <View style={{ width: "100%", alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 20 }}>
             <TouchableOpacity style={{ marginTop: 20, width: "25%", height: 40, justifyContent: "center", borderRadius: 50, backgroundColor: "#1659E8" }} onPress={() => setAmount(100)}>
               <Text style={{ textAlign: "center", color: "#fff" }}>$100</Text>
             </TouchableOpacity>
@@ -72,18 +273,26 @@ const WithdrawScreen = () => {
             <TouchableOpacity style={{ marginTop: 20, width: "25%", height: 40, justifyContent: "center", borderRadius: 50, backgroundColor: "#1659E8" }} onPress={() => setAmount(5000)}>
               <Text style={{ textAlign: "center", color: "#fff" }}>$5000</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View style={{ width: "100%", alignItems: "center" }}>
-            <TouchableOpacity style={{ marginTop: 20, width: "40%", height: 60, justifyContent: "center", borderRadius: 50, backgroundColor: "#1659E8" }}>
-              <Text style={{ textAlign: "center", color: "#fff" }}>Withdraw</Text>
+            <TouchableOpacity
+              style={{
+                marginTop: 20,
+                width: "40%",
+                padding: 15,
+                justifyContent: "center",
+                borderRadius: 50,
+                backgroundColor: "#1659E8"
+              }}
+              onPress={processWithdraw}
+            >
+              <Text style={{ textAlign: "center", color: "#fff" }}>Submit</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default WithdrawScreen
-
-const styles = StyleSheet.create({}) 
+export default WithdrawScreen;

@@ -1,6 +1,5 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 
 const SuccessErrorPage = ({ route }) => {
@@ -8,18 +7,16 @@ const SuccessErrorPage = ({ route }) => {
   const navigation = useNavigation();
   if (status == "success") {
     return (
-      <View>
+      <View style={{flex:1, justifyContent:'center', alignItems:'center', padding:20, backgroundColor:"#FFFFFF"}}>
         <StatusBar backgroundColor={"#16E875FF"} color={"#fff"} />
-        <Image source={require('../../assets/success.gif')} style={{ width: "auto", height: "auto" }} />
-        <Text>
+        <Image source={require('../../assets/success.gif')} style={{ width: 200, height: 200 }} />
+        <Text style={{lineHeight:20, fontSize:15, textAlign:"center", fontWeight:'bold', margin:10}}>
           {message}
         </Text>
         <View
           style={{
-            width: "100%",
             justifyContent: "center",
             alignItems: "center",
-            marginTop: "auto",
             height: 80,
             marginBottom: 20
           }}
@@ -33,9 +30,9 @@ const SuccessErrorPage = ({ route }) => {
               borderRadius: 20,
               backgroundColor: "#16E875FF"
             }}
-            onPress={() => navigation.navigate(nextPage)}
+            onPress={() => navigation.navigate('history')}
           >
-            <Text style={{ textAlign: "center", color: "#fff" }}>Submit</Text>
+            <Text style={{ textAlign: "center", color: "#fff" }}>Continue</Text>
           </TouchableOpacity>
         </View>
       </View>

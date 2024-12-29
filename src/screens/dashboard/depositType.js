@@ -1,4 +1,5 @@
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -6,13 +7,14 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import * as Clipboard from "expo-clipboard";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import QrCodeGen from "../../components/Qrcode";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import LoadingWidget from "../../components/loadingWidget";
+import { AppContext } from "../../../appContext";
 
 const DepositType = ({ route }) => {
   const navigation = useNavigation();
@@ -20,63 +22,66 @@ const DepositType = ({ route }) => {
   const [walletAddress, setWalletAddress] = useState(
     "rJ43scnlweywgeywbrw4938h34r8wg4e4"
   );
-  const [openQRcode] = useState(false);
+  const [openQRcode, setOpenQRcode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(false);
+  const { user } = useContext(AppContext);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 3000);
+  // }, []);
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, []);
-  //   useEffect(() => {
-  //     async function getWalletAddress(coin) {
-  //       setLoading(true);
-  //       try {
-  //         const url = "https://stocksfxpro.com/api/user/wallet/address";
-  //         const resp = await fetch(url, {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json"
-  //           },
-  //           body: JSON.stringify({
-  //             wallet: coin
-  //           })
-  //         });
-
-  //         const response = await resp.json();
-  //         if (response.status === 400) {
-  //           setErr(true);
-  //           setLoading(false);
-  //           return;
-  //         } else {
-  //           setLoading(false);
-  //           setWalletAddress(response.address);
-  //           setOpenQRcode(true)
-  //         }
-  //       } catch (err) {
-  //         setErr(true);
-  //         Alert.alert("Network error please try again");
-  //         setLoading(false);
-  //       }
-  //     }
-  //     getWalletAddress(coin);
-  //   }, []);
-  //
-  const handleDepositFunding = async () => {
-    setLoading(true);
-    try {
-      const resp = await fetch(
-        "https://stocksfxpro.com/api/user/deposits/fund/add",
-        {
+    async function getWalletAddress(coin) {
+      setLoading(true);
+      try {
+        const url = "https://stocksfxpro.com/api/user/wallet/address";
+        const resp = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            userid: user.userid,
-            payment_mode: coin,
-            amount
+            wallet: coin
           })
+        });
+
+        const response = await resp.json();
+        if (response.status === 400) {
+          setErr(true);
+          setLoading(false);
+          return;
+        } else {
+          setLoading(false);
+          setWalletAddress(response.address);
+          setOpenQRcode(true);
+        }
+      } catch (err) {
+        setErr(true);
+        Alert.alert("Network error please try again");
+        setLoading(false);
+      }
+    }
+    getWalletAddress(coin);
+  }, []);
+
+  const handleDepositFunding = async () => {
+    setLoading(true);
+    let data = {
+      userid: user.userid,
+      payment_mode: coin,
+      amount
+    };
+    try {
+
+      const resp = await fetch(
+        "https://stocksfxpro.com/api/user/deposits/fund/add/mobile",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
         }
       );
 
@@ -89,7 +94,7 @@ const DepositType = ({ route }) => {
         navigation.navigate("successError", {
           status: "success",
           message:
-            "Deposit initiated successfully Account will be funded on payment confirmation please wait while we confirm your transaction"
+            "Deposit initiated successfully Account will be funded on payment confirmation please wait while we process your transaction"
         });
       }
     } catch (err) {
@@ -109,7 +114,7 @@ const DepositType = ({ route }) => {
       <SafeAreaView style={{ backgroundColor: "#090909", height: "100%" }}>
         <ScrollView style={{ padding: 10, height: "100%" }}>
           {/* QRCode */}
-          <View
+          {/* <View
             style={{
               width: "100%",
               justifyContent: "center",
@@ -117,7 +122,7 @@ const DepositType = ({ route }) => {
             }}
           >
             <QrCodeGen qrValue={walletAddress} />
-          </View>
+          </View> */}
           {openQRcode &&
             <View
               style={{

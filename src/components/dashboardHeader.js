@@ -31,7 +31,7 @@ const DashboardHeader = () => {
                 justifyContent:"center",
                 alignItems:"center"
             }}> 
-          <Text style={{color:"#fff",}}>S</Text>
+          <Text style={{color:"#fff",}}>{user.fullname[0]}</Text>
           </View>
         <View>
             <Text style={{color:"#fff",fontSize:20,fontWeight:"bold"}}>{user.fullname}</Text>

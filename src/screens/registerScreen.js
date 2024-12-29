@@ -1,66 +1,69 @@
 import { useState } from "react";
-import { KeyboardAvoidingView, ScrollView } from "react-native";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  ScrollView
+} from "react-native";
 import { TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import DropDownPicker from "react-native-dropdown-picker";
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
-  const [username, setUsername] = useState("");
+  const [country, setCountry] = useState("");
   const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPasssword, setConfirmPassword] = useState("");
-  const handleRegistration = () => {
-    let data = JSON.stringify({
-      "fullname": $('#name').val(),
-      "currency": $('#currency').val(),
-      "referer": $('#referer').val(),
-      "email": $('#email').val(),
-      "phone": $('#phone').val(),
-      "country": $('#country').val().split(":")[0],
-      "password": $('#password').val()
-  });
+  const [loading, setLoading] = useState(false);
 
-  if (data.status == 200) {
-    $('#wer').html(`<i class="fa fa-check"></i>`);
-    $('#info').html(`<div class="alert alert-success">${data.message}. A verification code has been sent to your email! Click on the link sent to your email to complete verification. Login to continue</div>`);
-    $('#info').show();
-    document.getElementById("regform").reset();
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0;
-    // setTimeout(() => {
-    //     window.location = 'login.html';
-    // },2000);
-} else if (data.registered) {
-    document.getElementById("regform").reset();
-    document.body.scrollTop = 0; // For Safari
-    document.documentElement.scrollTop = 0;
-    $('#wer').html(`Register <i class="fa fa-arrow-right"></i>`);
-    $('#info').html(`<div class="alert alert-danger">${data.message}</div>`);
-    $('#info').show();
-}
-else {
-    $('#wer').html(`Register <i class="fa fa-arrow-right"></i>`);
-    $('#info').html(`<div class="alert alert-danger">${data.message}</div>`);
-    $('#error').show();
-}
-{/* <option>Select Trading Currency</option>
-                                    <option value="$">USD</option>
-                                    <option value="€">EUR</option>
-                                    <option value="£">GBP</option>
-                                    <option value="R">South african Rand</option>
-                                    <option value="PHP">Philippine Peso</option>
-                                    <option value="Rs">PKR</option> */}
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("Choose");
+  const [currency, setCurrency] = useState([
+    { label: "Choose", value: " $" },
+    { label: "USD", value: "$" },
+    { label: "EUR", value: "€" },
+    { label: "GBP", value: "£" },
+    { label: "South african Rand", value: "R" }
+  ]);
+  const handleRegistration = async () => {
+    setLoading(true);
+    let data = {
+      country,
+      email,
+      fullname: fullName,
+      password,
+      phone: phoneNumber
+    };
+    try {
+      const resp = await fetch("https://stocksfxpro.com/api/user/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
 
+      const response = await resp.json();
+      if (response.status === 400) {
+        setLoading(false);
+        return;
+      } else {
+        setLoading(false);
+        navigation.navigate("login");
+        Alert.alert("Success", "Account updated successfully");
+      }
+    } catch (err) {
+      Alert.alert("Network error please try again");
+      setLoading(false);
+    }
   };
   return (
     <SafeAreaView style={{ height: "100%", backgroundColor: "#000" }}>
-      <ScrollView>
+      <ScrollView nestedScrollEnabled={true} horizontal={false}>
         <View style={styles.main}>
           <View style={{ padding: 20 }}>
             <Text style={styles.headerText}>Sign Up</Text>
@@ -69,36 +72,14 @@ else {
             <KeyboardAvoidingView>
               <View style={{ padding: 20 }}>
                 <View>
-                  <Text style={styles.inputlabel}>First Name</Text>
+                  <Text style={styles.inputlabel}>Your Name</Text>
                   <TextInput
-                    placeholder="First Name"
+                    placeholder="Full Name"
                     inputMode="text"
                     placeholderTextColor="#fff"
-                    value={firstName}
+                    value={fullName}
                     style={styles.inputText}
-                    onChangeText={value => setFirstName(value)}
-                  />
-                </View>
-                <View>
-                  <Text style={styles.inputlabel}>Last Name</Text>
-                  <TextInput
-                    placeholder="Last Name"
-                    inputMode="text"
-                    placeholderTextColor="#fff"
-                    value={lastName}
-                    style={styles.inputText}
-                    onChangeText={value => setLastName(value)}
-                  />
-                </View>
-                <View>
-                  <Text style={styles.inputlabel}>Username</Text>
-                  <TextInput
-                    placeholder="Username"
-                    inputMode="text"
-                    placeholderTextColor="#fff"
-                    value={username}
-                    style={styles.inputText}
-                    onChangeText={value => setUsername(value)}
+                    onChangeText={value => setFullName(value)}
                   />
                 </View>
                 <View>
@@ -113,6 +94,17 @@ else {
                   />
                 </View>
                 <View>
+                  <Text style={styles.inputlabel}>Country</Text>
+                  <TextInput
+                    placeholder="Country"
+                    inputMode="text"
+                    placeholderTextColor="#fff"
+                    value={country}
+                    style={styles.inputText}
+                    onChangeText={value => setCountry(value)}
+                  />
+                </View>
+                <View>
                   <Text style={styles.inputlabel}>Phone Number</Text>
                   <TextInput
                     placeholder="Phone Number"
@@ -121,6 +113,26 @@ else {
                     value={phoneNumber}
                     style={styles.inputText}
                     onChangeText={value => setPhoneNumber(value)}
+                  />
+                </View>
+                <View>
+                  <Text style={styles.inputlabel}>Select Currency</Text>
+                  <DropDownPicker
+                    open={open}
+                    value={value}
+                    listMode="SCROLLVIEW"
+                    items={currency}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setItems={setCurrency}
+                    placeholder="Select Trading Currency"
+                    theme="DARK"
+                    style={{
+                      width: "100%",
+                      borderRadius: 10,
+                      height: 60,
+                      marginBottom: 10
+                    }}
                   />
                 </View>
                 <View>
@@ -155,10 +167,13 @@ else {
                       borderRadius: 100,
                       backgroundColor: "#1659E8"
                     }}
+                    onPress={handleRegistration}
                   >
-                    <Text style={{ textAlign: "center", color: "#fff" }}>
-                      Register
-                    </Text>
+                    {loading
+                      ? <ActivityIndicator color={"#fff"} />
+                      : <Text style={{ textAlign: "center", color: "#fff" }}>
+                          Register
+                        </Text>}
                   </TouchableOpacity>
                 </View>
               </View>
@@ -224,7 +239,10 @@ else {
                   </View>
                 </TouchableOpacity>
               </View> */}
-              <Text style={{ textAlign: "center", padding: 20, color: "#fff" }} onPress={() => navigation.navigate("login")}>
+              <Text
+                style={{ textAlign: "center", padding: 20, color: "#fff" }}
+                onPress={() => navigation.navigate("login")}
+              >
                 Already have an account? Login
               </Text>
               <View
@@ -234,8 +252,7 @@ else {
                   gap: 20,
                   justifyContent: "center"
                 }}
-              >
-              </View>
+              />
             </View>
           </View>
         </View>
@@ -272,6 +289,5 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     color: "#fff",
     marginBottom: 10
-  },
-  button: {}
+  }
 });

@@ -45,11 +45,6 @@ export default function LoginScreen() {
             setLoading(false);
         }
         
-        // navigation.navigate(screen);
-        return;
-    }
-    const onPressed = (screen) => {
-        if (screen !== '') navigation.navigate(screen);
         return;
     }
     return (

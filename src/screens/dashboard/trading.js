@@ -1,17 +1,17 @@
 import {
-  FlatList,
-  Image,
+  // FlatList,
+  // Image,
   ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
+  // Text,
   View
 } from "react-native";
 import React from "react";
 import TopMarket from "../../components/topMarket";
 import { SafeAreaView } from "react-native-safe-area-context";
-import myStylesheet from "../../stylesheet";
-import Ionicons from "react-native-vector-icons/Ionicons";
+// import myStylesheet from "../../stylesheet";
+// import Ionicons from "react-native-vector-icons/Ionicons";
 import WebView from "react-native-webview";
 
 const TradingScreen = () => {

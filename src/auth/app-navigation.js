@@ -14,6 +14,8 @@ import SecurityScreen from '../screens/dashboard/security';
 import NotificationsPage from '../screens/dashboard/notifications';
 import DepositType from '../screens/dashboard/depositType';
 import SuccessErrorPage from '../screens/successErrorPage';
+import HistoryPage from '../screens/dashboard/history';
+import ConfirmWithdrawal from '../screens/dashboard/confirmWithdraw';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -92,6 +94,31 @@ const AppNavStack = () => {
           }
         }} 
         component={SuccessErrorPage}
+      />
+      <Stack.Screen
+        name='history'
+        options={{
+          headerShown:false,
+          headerStyle:{
+            backgroundColor:"#0F0F0F",
+          },
+          headerTitleStyle:{
+            color:"#fff"
+          }
+        }} 
+        component={HistoryPage}
+      />
+      <Stack.Screen
+        name='confirm'
+        options={{
+          headerStyle:{
+            backgroundColor:"#0F0F0F",
+          },
+          headerTitleStyle:{
+            color:"#fff"
+          }
+        }} 
+        component={ConfirmWithdrawal}
       />
     </Stack.Navigator>
   )
@@ -232,6 +259,7 @@ const AppNavStackHome = () => {
       <Stack.Screen
         name='successError'
         options={{
+          headerShown:false,
           headerStyle:{
             backgroundColor:"#0F0F0F",
           },
@@ -240,6 +268,31 @@ const AppNavStackHome = () => {
           }
         }} 
         component={SuccessErrorPage}
+      />
+      <Stack.Screen
+        name='history'
+        options={{
+          headerShown:false,
+          headerStyle:{
+            backgroundColor:"#0F0F0F",
+          },
+          headerTitleStyle:{
+            color:"#fff"
+          }
+        }} 
+        component={HistoryPage}
+      />
+      <Stack.Screen
+        name='confirm'
+        options={{
+          headerStyle:{
+            backgroundColor:"#0F0F0F",
+          },
+          headerTitleStyle:{
+            color:"#fff"
+          }
+        }} 
+        component={ConfirmWithdrawal}
       />
     </Stack.Navigator>
   )

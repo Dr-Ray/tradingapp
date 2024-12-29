@@ -69,10 +69,15 @@ const DepositScreen = () => {
             </TouchableOpacity>
           </View> */}
           <View style={{ width: "100%", alignItems: "center" }}>
-            <TouchableOpacity style={{ marginTop: 20, width: "40%", padding:15, justifyContent: "center", borderRadius: 50, backgroundColor: "#1659E8" }} onPress={() => navigation.navigate("depositType", {
-            coin: value,
-            amount,
-          })}>
+            <TouchableOpacity style={{ marginTop: 20, width: "40%", padding:15, justifyContent: "center", borderRadius: 50, backgroundColor: "#1659E8" }} onPress={() => {
+              if(amount == 0) {
+                return;
+              }
+              navigation.navigate("depositType", {
+                coin: value,
+                amount,
+              })
+            }}>
               <Text style={{ textAlign: "center", color: "#fff" }}>Deposit</Text>
             </TouchableOpacity>
           </View>

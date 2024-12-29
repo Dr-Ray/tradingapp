@@ -13,14 +13,13 @@ import React, { useCallback, useContext, useState } from "react";
 import DashboardHeader from "../../components/dashboardHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SearchComponent from "../../components/search";
-import PortfolioScroller from "../../components/portfolioScroller";
 import TopMarket from "../../components/topMarket";
 import { useNavigation } from "@react-navigation/native";
 import { AppContext } from "../../../appContext";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const DashboardHome = () => {
-  const { user, setUser } = useContext(AppContext);
+  const { user, setUser } = useContext(AppContext); 
   const navigation = useNavigation();
   const [myBal, seeBal] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
