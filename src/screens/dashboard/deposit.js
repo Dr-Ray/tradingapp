@@ -2,7 +2,7 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-nativ
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import myStylesheet from '../../stylesheet';
-import Ionicons from 'react-native-vector-icons/Ionicons'
+// import Ionicons from 'react-native-vector-icons/Ionicons'
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,8 +14,7 @@ const DepositScreen = () => {
     const [items, setItems] = useState([
       { label: 'Bitcoin', value: 'Bitcoin'},
       { label: 'Ethereum', value: 'Ethereum'},
-      { label: 'USDT', value: 'USDT'},
-      { label: 'Others', value: 'Others' }
+      { label: 'USDT', value: 'USDT'}
     ]);
   return (
     <SafeAreaView>
@@ -32,9 +31,6 @@ const DepositScreen = () => {
               justifyContent:"space-between",
               borderColor: "#fff"
             }]}>
-          {/* <View style={[{ gap: 10 }]}>
-            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 18 }}>Paypal</Text>
-          </View> */}
           <View>
             <DropDownPicker
               open={open}
@@ -56,18 +52,7 @@ const DepositScreen = () => {
             <TextInput inputMode='numeric' value={amount} style={{ color: "#fff", fontWeight: "bold", fontSize: 40 }} onChangeText={amt => setAmount(amt)} />
           </View>
           <Text style={{ fontSize: 10, color: "#fff" }}>Min $100 - Max $10000</Text>
-          {/* <Text style={{ fontSize: 20, color: "#fff" }}>Current Balance: {myBal}</Text> */}
-          {/* <View style={{ width: "100%", alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 20 }}>
-            <TouchableOpacity style={{ marginTop: 20, width: "25%", height: 40, justifyContent: "center", borderRadius: 50, backgroundColor: "#1659E8" }} onPress={() => setAmount(100)}>
-              <Text style={{ textAlign: "center", color: "#fff" }}>$100</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ marginTop: 20, width: "25%", height: 40, justifyContent: "center", borderRadius: 50, backgroundColor: "#1659E8" }} onPress={() => setAmount(500)}>
-              <Text style={{ textAlign: "center", color: "#fff" }}>$500</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ marginTop: 20, width: "25%", height: 40, justifyContent: "center", borderRadius: 50, backgroundColor: "#1659E8" }} onPress={() => setAmount(5000)}>
-              <Text style={{ textAlign: "center", color: "#fff" }}>$5000</Text>
-            </TouchableOpacity>
-          </View> */}
+
           <View style={{ width: "100%", alignItems: "center" }}>
             <TouchableOpacity style={{ marginTop: 20, width: "40%", padding:15, justifyContent: "center", borderRadius: 50, backgroundColor: "#1659E8" }} onPress={() => {
               if(amount == 0) {

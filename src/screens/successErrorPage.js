@@ -7,10 +7,10 @@ const SuccessErrorPage = ({ route }) => {
   const navigation = useNavigation();
   if (status == "success") {
     return (
-      <View style={{flex:1, justifyContent:'center', alignItems:'center', padding:20, backgroundColor:"#FFFFFF"}}>
-        <StatusBar backgroundColor={"#16E875FF"} color={"#fff"} />
+      <View style={{flex:1, justifyContent:'center', alignItems:'center', padding:20, backgroundColor:"#090909"}}>
+        <StatusBar backgroundColor={"#189D57"} color={"#fff"} />
         <Image source={require('../../assets/success.gif')} style={{ width: 200, height: 200 }} />
-        <Text style={{lineHeight:20, fontSize:15, textAlign:"center", fontWeight:'bold', margin:10}}>
+        <Text style={{lineHeight:20, fontSize:15, textAlign:"center", fontWeight:'bold', margin:10, color:"#fff"}}>
           {message}
         </Text>
         <View
@@ -28,7 +28,7 @@ const SuccessErrorPage = ({ route }) => {
               padding: 15,
               justifyContent: "center",
               borderRadius: 20,
-              backgroundColor: "#16E875FF"
+              backgroundColor: "#189D57"
             }}
             onPress={() => navigation.navigate('history')}
           >
@@ -74,5 +74,3 @@ const SuccessErrorPage = ({ route }) => {
 };
 
 export default SuccessErrorPage;
-
-const styles = StyleSheet.create({});

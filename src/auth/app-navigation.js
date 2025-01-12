@@ -16,6 +16,8 @@ import DepositType from '../screens/dashboard/depositType';
 import SuccessErrorPage from '../screens/successErrorPage';
 import HistoryPage from '../screens/dashboard/history';
 import ConfirmWithdrawal from '../screens/dashboard/confirmWithdraw';
+import ViewCrypto from '../screens/dashboard/viewCrypto';
+import CopyTraders from '../screens/dashboard/copyTraders';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -320,6 +322,7 @@ const AppNavigation = () => {
       <Tab.Screen
         name='trading'
         options={{
+          headerShown: false,
           tabBarLabel: "Trading",
           tabBarIcon: ({ focused, color }) => (
             <Ionicons name={focused ? 'trending-up-sharp' : 'trending-up-outline'} color={color} size={24} />
@@ -331,7 +334,18 @@ const AppNavigation = () => {
             color: "#fff"
           }
         }}
-        component={TradingScreen}
+        component={AppNavStackTrading}
+      />
+      <Tab.Screen
+        name='Copy'
+        options={{
+          tabBarLabel: "Copy",
+          headerShown: false,
+          tabBarIcon: ({ focused, color }) => (
+            <Ionicons name={focused ? 'copy-sharp' : 'copy-outline'} color={color} size={24} />
+          )
+        }}
+        component={CopyTraders}
       />
       <Tab.Screen
         name='wallet'
@@ -356,6 +370,38 @@ const AppNavigation = () => {
         component={AppNavStackProfile}
       />
     </Tab.Navigator>
+  )
+}
+
+const AppNavStackTrading = () => {
+  return (
+    <Stack.Navigator initialRouteName='Trading'>
+      <Stack.Screen
+        name='Trading'
+        options={{
+          headerStyle: {
+            backgroundColor: "#0F0F0F",
+          },
+          headerTitleStyle: {
+            color: "#fff"
+          }
+        }}
+        component={TradingScreen}
+      />
+      <Stack.Screen 
+        name='singleCoin'
+        options={{
+          headerShown:false,
+          headerStyle:{
+            backgroundColor:"#0F0F0F",
+          },
+          headerTitleStyle:{
+            color:"#fff"
+          }
+        }} 
+        component={ViewCrypto} 
+      />
+    </Stack.Navigator>
   )
 }
 

@@ -26,11 +26,7 @@ const DepositType = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState(false);
   const { user } = useContext(AppContext);
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 3000);
-  // }, []);
+
   useEffect(() => {
     async function getWalletAddress(coin) {
       setLoading(true);
@@ -113,16 +109,6 @@ const DepositType = ({ route }) => {
     return (
       <SafeAreaView style={{ backgroundColor: "#090909", height: "100%" }}>
         <ScrollView style={{ padding: 10, height: "100%" }}>
-          {/* QRCode */}
-          {/* <View
-            style={{
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <QrCodeGen qrValue={walletAddress} />
-          </View> */}
           {openQRcode &&
             <View
               style={{

@@ -108,14 +108,6 @@ export default function LoginScreen() {
                                 </TouchableOpacity>
                             </View> */}
                             <Text style={{ textAlign: "center", padding: 20, color: "#fff" }}  onPress={() => navigation.navigate('register')}>Don't have an account? Register</Text>
-                            {/* <View style={{ width: "100%", flexDirection: 'row', gap: 20, justifyContent: "center" }}>
-                                <TouchableOpacity style={{ marginBottom: 20, marginTop: 20, width: "40%", height: 50, justifyContent: "center", borderRadius: 100, backgroundColor: "#00f" }} onPress={() => navigation.navigate('register')}>
-                                    <Text style={{ textAlign: "center", color: "#fff" }}>Register</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{ marginBottom: 20, marginTop: 20, width: "40%", height: 50, justifyContent: "center", borderRadius: 100, backgroundColor: "#252525" }}>
-                                    <Text style={{ textAlign: "center", color: "#fff" }}>Cancel</Text>
-                                </TouchableOpacity>
-                            </View> */}
                         </View>
                     </View>
                 </View>

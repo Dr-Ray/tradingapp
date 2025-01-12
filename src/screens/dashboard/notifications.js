@@ -64,12 +64,12 @@ const NotificationsPage = () => {
                 <Text style={{ color: "#fff", fontWeight: "bold" }}>
                   {item.createdAt}
                 </Text>
-                <Text style={{ color: "#fff" }}>{item.message}</Text>
+                <Text style={{ color: "#fff" }}>{(item.message).replace(/\s+/g, ' ')}</Text>
               </View>
               <View style={{ width: "100%", alignItems: "center" }}>
                   <View
                     style={[
-                      { backgroundColor: "#1B1B1B", height: 2, width: "93%" }
+                      { backgroundColor: "#1B1B1B", height: 2, width: "98%" }
                     ]} />
                 </View></>
             )}

@@ -65,7 +65,7 @@ const ConfirmWithdrawal = ({ route }) => {
       <View style={{ padding: 10, gap: 30 }}>
         <Text style={{ color: "#fff" }}>
           Provide the below information and re-check the information before
-          submitting. The given information will be sent the given information
+          submitting.
         </Text>
         <Text style={{ color: "#fff" }}>
           See that you double check that the information provided is correct,
@@ -81,7 +81,7 @@ const ConfirmWithdrawal = ({ route }) => {
                 {" "}Kindly input your payment information below!
               </Text>
               <TextInput
-                placeholder="Details"
+                placeholder={`Please enter your ${coin} address / withdrawal information here`}
                 placeholderTextColor="#fff"
                 value={message}
                 multiline={true}
@@ -89,7 +89,7 @@ const ConfirmWithdrawal = ({ route }) => {
                 onChangeText={text => setMessage(text)}
               />
             </View>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={handleWithdraw}>
               {loading
                 ? <ActivityIndicator color={"#fff"} />
                 : <Text style={{ textAlign: "center", color: "#fff" }}>

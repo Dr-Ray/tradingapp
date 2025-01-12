@@ -14,7 +14,7 @@ const DashboardHeader = () => {
         alignItems:"center", 
         justifyContent:"space-between", 
         width:"100%",
-        paddingVertical:20,
+        paddingVertical:10,
     }}>
       <View 
         style={{
@@ -23,8 +23,8 @@ const DashboardHeader = () => {
             alignItems:"center"
         }}>
         <View style={{
-                width:50, 
-                height:50, 
+                width:40, 
+                height:40, 
                 borderRadius: 1000,
                 backgroundColor:"red",
                 
@@ -34,7 +34,7 @@ const DashboardHeader = () => {
           <Text style={{color:"#fff",}}>{user.fullname[0]}</Text>
           </View>
         <View>
-            <Text style={{color:"#fff",fontSize:20,fontWeight:"bold"}}>{user.fullname}</Text>
+            <Text style={{color:"#fff",fontSize:18,fontWeight:"bold"}}>{user.fullname}</Text>
             <Text style={{color:"#fff"}}>Welcome!</Text>
         </View>
       </View>
