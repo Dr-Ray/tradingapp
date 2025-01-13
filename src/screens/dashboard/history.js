@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import LoadingWidget from "../../components/loadingWidget";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DashboardHeader from "../../components/dashboardHeader";
-import { AppContext } from "../../../appContext";
+import { AppContext } from "../../../appContext"; 
 
 const HistoryPage = () => {
   const { user } = useContext(AppContext);
