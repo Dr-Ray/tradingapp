@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
-  FlatList
+  FlatList,
+  ScrollView
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,44 +22,41 @@ const CopyTraders = () => {
   const [traders, setTraders] = useState([]);
   const [SearchTraders, setSearchTraders] = useState([]);
   const [up, setUp] = useState(0);
-  const [openSearch, setOpenSearch] = useState(true);
+  const [openSearch, setOpenSearch] = useState(false);
 
   useEffect(
     () => {
       fetchData();
-      console.log(traders);
+      // console.log(traders);
     },
     [up]
   );
 
   const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `https://stocksfxpro.com/api/user/traders/all`,
-        {
-          method: "POST",
-          headers: {
-            "content-type": "application/json"
-          },
-          body: JSON.stringify({ userid: user.userid })
-        }
-      );
-      const resp = await response.json();
-      if (resp.status === 400) {
+    fetch(
+      `https://stocksfxpro.com/api/user/traders/all`,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({ userid: user.userid })
+      }
+    ).then( response => response.json()).then(resp => {
+      if (resp.status == 400) {
         setLoading(false);
         return;
       } else {
         setTraders(resp.traders);
         setLoading(false);
       }
-    } catch (err) {
+    }).catch (err => {
       Alert.alert("Network error please try again");
       setLoading(false);
-    }
+    });
   };
 
-  const TradeCopyRequest = async traderID => {
+  const TradeCopyRequest = async (traderID) => {
     let copy = {
       trader_id: traderID,
       copier_id: user.userid
@@ -83,7 +81,6 @@ const CopyTraders = () => {
     }
   };
 
-
   if (loading) {
     return (
       <View
@@ -103,7 +100,7 @@ const CopyTraders = () => {
     );
   } else {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{ backgroundColor: "#090909", height: "100%" }}>
         <View
           style={{
             marginTop: 10,
@@ -149,7 +146,7 @@ const CopyTraders = () => {
                 setSrch("");
                 setOpenSearch(false);
               }}
-              style={{ marginLeft: 10 }}
+              style={{ marginLeft: 10, color:"#fff" }}
             >
               Cancel
             </Text>
@@ -157,7 +154,7 @@ const CopyTraders = () => {
         </View>
             
         {openSearch &&
-            <View
+            <ScrollView
               style={{
                 position: "absolute",
                 top: 65,
@@ -166,19 +163,135 @@ const CopyTraders = () => {
                 height: "100%",
                 flex:1,
                 zIndex:9,
-                backgroundColor: "#fff",
+                backgroundColor: "#090909",
                 paddingHorizontal:10
               }}
             >
-              <FlatList
-              data={SearchTraders}
-              renderItem={(trader, index) =>
-                <View
+                {
+                  SearchTraders?.map((trader, index) => (
+                    <View
+                        style={{
+                          borderWidth: 2,
+                          borderColor: "#fff",
+                          marginVertical: 8,
+                          paddingHorizontal:10,
+                          borderRadius: 10
+                        }}
+                        key={index}
+                      >
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            marginVertical: 8,
+                            justifyContent:"space-between"
+                          }}
+                        >
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              marginVertical: 8
+                            }}
+                          >
+                            <Image source={{uri:`https://stocksfxpro.com/uploads/${trader.image}`}} style={{height:40,width:40,borderRadius:100,position:"relative"}} />
+                            <View style={{ marginLeft: 8 }}>
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                  gap: 8
+                                }}
+                              >
+                                <Text style={{color:"#fff"}}>
+                                  {trader.name}
+                                </Text>
+                                {/* {(trader.verified === "1") && (<img src='assets/twitter.jpeg' style={{width:"15px"}}  alt='te'/>)} */}
+                              </View>
+                            </View>
+                          </View>
+                          {(trader?.copier.length > 0)
+                          ? trader.copier.map(
+                              (copier, index) =>
+                                copier.accepted === "1"
+                                  ? <View style={{ marginLeft: 8 }} key={index}>
+                                      <TouchableOpacity style={{backgroundColor:"green", color:"#fff", borderRadius:10, width:80, paddingVertical:10}}>
+                                        <Text style={{textAlign:"center",color:"#fff", fontSize:10}}>Accepted</Text>
+                                      </TouchableOpacity>
+                                    </View>
+                                  : <View style={{ marginLeft: 8 }} key={index}>
+                                      <TouchableOpacity style={{backgroundColor:"blue", color:"#fff", borderRadius:10, width:80, paddingVertical:14}}>
+                                        <Text style={{textAlign:"center", color:"#fff", fontSize:10}}>Requested</Text>
+                                      </TouchableOpacity>
+                                    </View>
+                            )
+                          : <View style={{ marginLeft: 8 }}>
+                              <TouchableOpacity
+                                style={{backgroundColor:"#aaa", color:"#fff", borderRadius:10, width:80, paddingVertical:10}}
+                                onPress={() => TradeCopyRequest(trader.id)}
+                              >
+                                <Text style={{textAlign:"center"}}>Copy</Text>
+                              </TouchableOpacity>
+                            </View>}
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between"
+                          }}
+                        >
+                          <View>
+                            <View style={{ marginVertical: 8 }}>
+                              <Text style={{color:"#fff"}}>ROI</Text>
+                              <Text className="text-green"  style={{color:"green"}}>
+                                +{trader.roi}%
+                              </Text>
+                            </View>
+                          </View>
+      
+                          <View>
+                            <View style={{ marginVertical: 8 }}>
+                              <Text style={{color:"#fff"}}>Minimum</Text>
+                              <Text style={{color:"#fff"}}>
+                                +{trader.minimum}
+                              </Text>
+                            </View>
+                          </View>
+      
+                          <View>
+                            <View style={{ marginVertical: 8 }}>
+                              <Text style={{color:"#fff"}}>Win Rate</Text>
+                              <Text style={{color:"#fff"}}>
+                                +{trader.win_percent}%
+                              </Text>
+                            </View>
+                          </View>
+      
+                          <View style={{ textAlign: "right" }}>
+                            <View style={{ marginVertical: 8 }}>
+                              <Text style={{color:"#fff"}}>Stability Index</Text>
+                              <Text style={{color:"#fff"}}>
+                                {trader.stabilityIndex}
+                              </Text>
+                            </View>
+                          </View>
+                        </View>
+                      </View>
+                  ))
+                }
+            </ScrollView>}
+
+        <ScrollView>
+        <View style={{ paddingHorizontal: 10 }}>
+          {
+            traders?.map((trader, index) => (
+              <View
                   style={{
-                    backgroundColor: "red",
                     borderWidth: 2,
-                    borderColor: "#000",
+                    borderColor: "#fff",
                     marginVertical: 8,
+                    paddingHorizontal:10,
                     borderRadius: 10
                   }}
                   key={index}
@@ -187,7 +300,8 @@ const CopyTraders = () => {
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
-                      marginVertical: 8
+                      marginVertical: 8,
+                      justifyContent:"space-between"
                     }}
                   >
                     <View
@@ -197,7 +311,7 @@ const CopyTraders = () => {
                         marginVertical: 8
                       }}
                     >
-                      {/* <Image source={{uri:`https://stocksfxpro.com/uploads/${trader.image}`}} style={{height:40,width:40,borderRadius:100,position:"relative"}} /> */}
+                      <Image source={{uri:`https://stocksfxpro.com/uploads/${trader.image}`}} style={{height:40,width:40,borderRadius:100,position:"relative"}} />
                       <View style={{ marginLeft: 8 }}>
                         <View
                           style={{
@@ -206,39 +320,37 @@ const CopyTraders = () => {
                             gap: 8
                           }}
                         >
-                          <Text>
+                          <Text style={{color:"#fff"}}>
                             {trader.name}
                           </Text>
                           {/* {(trader.verified === "1") && (<img src='assets/twitter.jpeg' style={{width:"15px"}}  alt='te'/>)} */}
                         </View>
                       </View>
                     </View>
-                    {/* {trader?.copier.length > 0
+                    {(trader?.copier.length > 0)
                     ? trader.copier.map(
                         (copier, index) =>
                           copier.accepted === "1"
                             ? <View style={{ marginLeft: 8 }} key={index}>
-                                <TouchableOpacity>
-                                  <Text>Accepted</Text>
+                                <TouchableOpacity style={{backgroundColor:"green", color:"#fff", borderRadius:10, width:80, paddingVertical:10}}>
+                                  <Text style={{textAlign:"center",color:"#fff", fontSize:10}}>Accepted</Text>
                                 </TouchableOpacity>
                               </View>
                             : <View style={{ marginLeft: 8 }} key={index}>
-                                <TouchableOpacity>
-                                  <Text>Requested</Text>
+                                <TouchableOpacity style={{backgroundColor:"blue", color:"#fff", borderRadius:10, width:80, paddingVertical:14}}>
+                                  <Text style={{textAlign:"center", color:"#fff", fontSize:10}}>Requested</Text>
                                 </TouchableOpacity>
                               </View>
                       )
                     : <View style={{ marginLeft: 8 }}>
                         <TouchableOpacity
-                          data-trader={trader.id}
+                          style={{backgroundColor:"#aaa", color:"#fff", borderRadius:10, width:80, paddingVertical:10}}
                           onPress={() => TradeCopyRequest(trader.id)}
                         >
-                          <Text>copy</Text>
+                          <Text style={{textAlign:"center"}}>Copy</Text>
                         </TouchableOpacity>
-                      </View>} */}
+                      </View>}
                   </View>
-                  <Text
-                  >{`https://stocksfxpro.com/uploads/${trader.image}`}</Text>
                   <View
                     style={{
                       flexDirection: "row",
@@ -248,8 +360,8 @@ const CopyTraders = () => {
                   >
                     <View>
                       <View style={{ marginVertical: 8 }}>
-                        <Text>ROI</Text>
-                        <Text className="text-green">
+                        <Text style={{color:"#fff"}}>ROI</Text>
+                        <Text  style={{color:"green"}}>
                           +{trader.roi}%
                         </Text>
                       </View>
@@ -257,8 +369,8 @@ const CopyTraders = () => {
 
                     <View>
                       <View style={{ marginVertical: 8 }}>
-                        <Text>Minimum</Text>
-                        <Text>
+                        <Text style={{color:"#fff"}}>Minimum</Text>
+                        <Text style={{color:"#fff"}}>
                           +{trader.minimum}
                         </Text>
                       </View>
@@ -266,8 +378,8 @@ const CopyTraders = () => {
 
                     <View>
                       <View style={{ marginVertical: 8 }}>
-                        <Text>Win Rate</Text>
-                        <Text>
+                        <Text style={{color:"#fff"}}>Win Rate</Text>
+                        <Text style={{color:"#fff"}}>
                           +{trader.win_percent}%
                         </Text>
                       </View>
@@ -275,133 +387,18 @@ const CopyTraders = () => {
 
                     <View style={{ textAlign: "right" }}>
                       <View style={{ marginVertical: 8 }}>
-                        <Text>Stability Index</Text>
-                        <Text>
+                        <Text style={{color:"#fff"}}>Stability Index</Text>
+                        <Text style={{color:"#fff"}}>
                           {trader.stabilityIndex}
                         </Text>
                       </View>
                     </View>
                   </View>
-                </View>}
-            />
-            </View>}
-
-        <View style={{ paddingHorizontal: 10 }}>
-          {
-            <FlatList
-              data={traders}
-              renderItem={(trader, index) =>
-                <View
-                  style={{
-                    marginVertical: 8,
-                    borderRadius: 10,
-                    elevation:0.5
-                  }}
-                  key={index}
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginVertical: 8
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        marginVertical: 8
-                      }}
-                    >
-                      {/* <Image source={{uri:`https://stocksfxpro.com/uploads/${trader.image}`}} style={{height:40,width:40,borderRadius:100,position:"relative"}} /> */}
-                      <View style={{ marginLeft: 8 }}>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: 8
-                          }}
-                        >
-                          <Text>
-                            {trader.name}
-                          </Text>
-                          {/* {(trader.verified === "1") && (<img src='assets/twitter.jpeg' style={{width:"15px"}}  alt='te'/>)} */}
-                        </View>
-                      </View>
-                    </View>
-                    {/* {trader?.copier.length > 0
-                    ? trader.copier.map(
-                        (copier, index) =>
-                          copier.accepted === "1"
-                            ? <View style={{ marginLeft: 8 }} key={index}>
-                                <TouchableOpacity>
-                                  <Text>Accepted</Text>
-                                </TouchableOpacity>
-                              </View>
-                            : <View style={{ marginLeft: 8 }} key={index}>
-                                <TouchableOpacity>
-                                  <Text>Requested</Text>
-                                </TouchableOpacity>
-                              </View>
-                      )
-                    : <View style={{ marginLeft: 8 }}>
-                        <TouchableOpacity
-                          data-trader={trader.id}
-                          onPress={() => TradeCopyRequest(trader.id)}
-                        >
-                          <Text>copy</Text>
-                        </TouchableOpacity>
-                      </View>} */}
-                  </View>
-                  <Text
-                  >{`https://stocksfxpro.com/uploads/${trader.image}`}</Text>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between"
-                    }}
-                  >
-                    <View>
-                      <View style={{ marginVertical: 8 }}>
-                        <Text>ROI</Text>
-                        <Text className="text-green">
-                          +{trader.roi}%
-                        </Text>
-                      </View>
-                    </View>
-
-                    <View>
-                      <View style={{ marginVertical: 8 }}>
-                        <Text>Minimum</Text>
-                        <Text>
-                          +{trader.minimum}
-                        </Text>
-                      </View>
-                    </View>
-
-                    <View>
-                      <View style={{ marginVertical: 8 }}>
-                        <Text>Win Rate</Text>
-                        <Text>
-                          +{trader.win_percent}%
-                        </Text>
-                      </View>
-                    </View>
-
-                    <View style={{ textAlign: "right" }}>
-                      <View style={{ marginVertical: 8 }}>
-                        <Text>Stability Index</Text>
-                        <Text>
-                          {trader.stabilityIndex}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>}
-            />
+                </View>
+            ))
           }
         </View>
+        </ScrollView>
 
       </SafeAreaView>
     );

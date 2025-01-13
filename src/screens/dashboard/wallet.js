@@ -17,7 +17,7 @@ const WalletScreen = () => {
       <View style={{ height: "100%" }}>
         <View style={{ paddingHorizontal: 20 }}>
           <LinearGradient
-            colors={["#9747FE", "#1659E8", "#1659E8"]}
+            colors={["#1659E8", "#252525", "#1659E8"]}
             style={{
               height: 200,
               width: "100%",
